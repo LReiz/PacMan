@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -29,6 +30,8 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	private static final long serialVersionUID = -3064797391161894854L;
 	private Thread thread;
 	
+	private boolean isRunning = false;
+	
 	private BufferedImage mainImage;
 	
 	private int WIDTH = World.TS*16 + 7;
@@ -41,6 +44,10 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	public static List<Entity> entities;
 	
 	public static Spritesheet spritesheet;
+	
+	public static Random rand;
+	
+	public static String gameState = "GAME";
 	
 	public InputStream stream_DS = ClassLoader.getSystemClassLoader().getResourceAsStream("Deep Shadow.ttf");
 	
@@ -67,6 +74,7 @@ public class Game extends Canvas implements KeyListener, Runnable {
 		addKeyListener(this);
 		initFrame();
 
+		rand = new Random();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		entities = new ArrayList<Entity>();
 		world = new World("/map1.png");
@@ -79,6 +87,13 @@ public class Game extends Canvas implements KeyListener, Runnable {
 
 	}
 	
+	private void restartGame() {
+		entities.clear();
+		maxCoins = 0;
+		curCoins = 0;
+		world = new World("/map1.png");
+	}
+	
 	public static void main(String args[]) {
 		Game game = new Game();
 		game.start();
@@ -86,15 +101,30 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	}
 	
 	private void tick() {
-		player.tick();
-		
-		Collections.sort(entities, entitySorter);
+		if(gameState == "GAME") {
+			player.tick();
+			
+			
+//		entities.get(entities.size() - 2).tick();
+			for(int i = 0; i < entities.size(); i++) {
+				entities.get(i).tick();
+			}
+			
+			Collections.sort(entities, entitySorter);
+		} else if(gameState == "GAMEOVER") {
+			
+		} else if(gameState == "YOUWIN") {
+			
+		} else if (gameState == "GAMERESTART") {
+			restartGame();
+			gameState = "GAME";
+		}
 	}
 	
 	private void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		if(bs == null) {
-			this.createBufferStrategy(3);
+			this.createBufferStrategy(6);
 			return;
 		}
 		
@@ -112,6 +142,19 @@ public class Game extends Canvas implements KeyListener, Runnable {
 			entities.get(i).render(g);
 		
 		player.render(g);
+		
+		if(gameState == "GAMEOVER") {
+			g.setColor(Color.WHITE);
+			g.drawString("GAME OVER", (WIDTH - 90)/2, (HEIGHT - 20)/2);
+			g.setFont(new Font("arial", 1, 8));
+			g.drawString("PRESS SPACE", (WIDTH - 70)/2, (HEIGHT)/2);
+		}
+		if(gameState == "YOUWIN") {
+			g.setColor(Color.WHITE);
+			g.drawString("YOU WIN", (WIDTH - 90)/2, (HEIGHT - 20)/2);
+			g.setFont(new Font("arial", 1, 8));
+			g.drawString("PRESS SPACE", (WIDTH - 70)/2, (HEIGHT)/2);
+		}
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
@@ -131,12 +174,17 @@ public class Game extends Canvas implements KeyListener, Runnable {
 		frame.setLocationRelativeTo(null);
 	}
 	
-	private void start() {
+	private synchronized void start() {
+		if(isRunning)
+			return;
+		isRunning = true;
 		thread = new Thread(this);
 		thread.start();
 	}
 	
-	private void stop() {
+	private synchronized void stop() {
+		if(!isRunning)
+			return;
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
@@ -151,28 +199,30 @@ public class Game extends Canvas implements KeyListener, Runnable {
 		int fps = 60;
 		double ns = 1000000000/fps;
 		double delta = 0;
-		double pastNano = System.nanoTime();
-		double currentNano;
+		long pastNano = System.nanoTime();
+		long currentNano;
 		
 		int numOfFrames = 0;
-		double pastSec = System.currentTimeMillis();
+		long pastSec = System.currentTimeMillis();
 		
-		while(true) {
+		while(isRunning) {
 			currentNano = System.nanoTime();
-			delta += (currentNano - pastNano);
+			delta += (currentNano - pastNano)/ns;
 			pastNano = currentNano;
-			if((delta/ns) >= 1) {
-				delta = 0;
-				numOfFrames++;
+			if(delta >= 1) {
 				tick();
 				render();
+				numOfFrames++;
+				delta--;
 			}
 			if(System.currentTimeMillis() - pastSec >= 1000) {
-//				System.out.println("FPS: " + numOfFrames);
+				System.out.println("FPS: " + numOfFrames);
 				numOfFrames = 0;
-				pastSec = System.currentTimeMillis();
+				pastSec += 1000;
 			}
 		}
+		
+		stop();
 	}
 
 	@Override
@@ -292,6 +342,13 @@ public class Game extends Canvas implements KeyListener, Runnable {
 				player.up = false;
 				player.right = false;
 				player.left = false;
+			}
+			
+		}
+		
+		if(gameState == "GAMEOVER" || gameState == "YOUWIN") {
+			if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+				gameState = "GAMERESTART";
 			}
 		}
 	}

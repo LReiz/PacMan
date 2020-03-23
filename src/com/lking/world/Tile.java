@@ -30,7 +30,7 @@ public class Tile {
 	protected int x;
 	protected int y;
 	protected BufferedImage sprite;
-	protected boolean collision;
+	public boolean collision;
 	
 	protected Tile(int x, int y, BufferedImage sprite) {
 		this.x = x;

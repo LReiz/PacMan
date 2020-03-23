@@ -10,11 +10,11 @@ import com.lking.world.World;
 public class Player extends Entity {
 
 	private int framesCounter = 0;
-	private int animationFramesSpeed = 3;
+	private int animationFramesSpeed = 6;
 	private int curAnimation = 0;
 	private int maxAnimation = 4;
 	
-	public double speed = 2;
+	public double speed = 1;
 	
 	public boolean right = true, left, up, down;
 	public boolean pendingRight, pendingLeft, pendingUp, pendingDown;
@@ -119,12 +119,14 @@ public class Player extends Entity {
 				if(Game.entities.get(i) instanceof Coin){
 					Game.entities.remove(i);
 					Game.curCoins++;
-				}	
-			}
+				} else if(Game.entities.get(i) instanceof Ghost) {
+					Game.gameState = "GAMEOVER";
+				}
+			} 
 		}
 		
 		if(Game.curCoins == Game.maxCoins)
-			System.out.println("you win");
+			Game.gameState = "YOUWIN";
 	}
 	
 	public void render(Graphics g) {

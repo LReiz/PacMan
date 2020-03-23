@@ -34,6 +34,10 @@ public class Entity {
 		this.sprite = sprite;
 	}
 	
+	public void tick() {
+		
+	}
+	
 	public void render(Graphics g) {
 		g.drawImage(sprite, (int) x, (int) y, World.TS, World.TS, null);
 	}
@@ -46,5 +50,4 @@ public class Entity {
 		return this.y;
 	}
 	
-
 }
