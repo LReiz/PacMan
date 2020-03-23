@@ -102,13 +102,10 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	
 	private void tick() {
 		if(gameState == "GAME") {
-			player.tick();
 			
-			
-//		entities.get(entities.size() - 2).tick();
-			for(int i = 0; i < entities.size(); i++) {
-				entities.get(i).tick();
-			}
+		for(int i = 0; i < entities.size(); i++) {
+			entities.get(i).tick();
+		}
 			
 			Collections.sort(entities, entitySorter);
 		} else if(gameState == "GAMEOVER") {
@@ -140,8 +137,6 @@ public class Game extends Canvas implements KeyListener, Runnable {
 
 		for(int i = 0; i < entities.size(); i++)
 			entities.get(i).render(g);
-		
-		player.render(g);
 		
 		if(gameState == "GAMEOVER") {
 			g.setColor(Color.WHITE);

@@ -98,7 +98,6 @@ public class World {
 				} else {
 					tiles[pixelAtual] = new TileFloor(xx*16, yy*16, Tile.FLOOR_TILE);
 				}
-				//-8552682
 				
 				if(pixels[pixelAtual] == 0xFF7D7F16) {			// Coins
 					Game.entities.add(new Coin(xx*16, yy*16, World.TS, World.TS, Entity.COIN));		
@@ -143,19 +142,19 @@ public class World {
 		double x4 = x + width, y4 = y + height;			// bottom right
 		
 		if(dir == 0) {		
-			if(tiles[(int) ((int)x1/World.TS + ((int)((y1 - 1)/World.TS - speed/World.TS) * WIDTH))].collision || tiles[(int) ((int)x2/World.TS + ((int)((y2 - 1)/World.TS - speed/World.TS)* WIDTH))].collision)
+			if(tiles[(int) ((int)x1/World.TS + ((int)((y1)/World.TS - speed/World.TS) * WIDTH))].collision || tiles[(int) ((int)x2/World.TS + ((int)((y2)/World.TS - speed/World.TS)* WIDTH))].collision)
 				return false;
 		}
 		if(dir == 1) {		
-			if(tiles[(int) (((int)((x2 + 1)/World.TS + speed/World.TS) + ((int)(y2/World.TS) * WIDTH)))].collision || tiles[(int) ((int)((x4 + 1)/World.TS  + speed/World.TS) + ((int)(y4/World.TS)* WIDTH))].collision)
+			if(tiles[(int) (((int)((x2)/World.TS + speed/World.TS) + ((int)(y2/World.TS) * WIDTH)))].collision || tiles[(int) ((int)((x4)/World.TS  + speed/World.TS) + ((int)(y4/World.TS)* WIDTH))].collision)
 				return false;
 		}
 		if(dir == 2) {		
-			if(tiles[(int) ((int)x3/World.TS + ((int)((y3 + 1)/World.TS + speed/World.TS) * WIDTH))].collision || tiles[(int) ((int)x4/World.TS + ((int)((y4 + 1)/World.TS + speed/World.TS)* WIDTH))].collision)
+			if(tiles[(int) ((int)x3/World.TS + ((int)((y3)/World.TS + speed/World.TS) * WIDTH))].collision || tiles[(int) ((int)x4/World.TS + ((int)((y4)/World.TS + speed/World.TS)* WIDTH))].collision)
 				return false;
 		}
 		if(dir == 3) {		
-			if(tiles[(int) ((int)((x1 - 1)/World.TS - speed/World.TS) + ((int)(y1/World.TS) * WIDTH))].collision || tiles[(int) ((int)((x3 - 1)/World.TS - speed/World.TS) + ((int)(y3/World.TS)* WIDTH))].collision)
+			if(tiles[(int) ((int)((x1)/World.TS - speed/World.TS) + ((int)(y1/World.TS) * WIDTH))].collision || tiles[(int) ((int)((x3)/World.TS - speed/World.TS) + ((int)(y3/World.TS)* WIDTH))].collision)
 				return false;
 		}
 		

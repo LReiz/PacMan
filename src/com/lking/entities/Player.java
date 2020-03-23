@@ -14,7 +14,7 @@ public class Player extends Entity {
 	private int curAnimation = 0;
 	private int maxAnimation = 4;
 	
-	public double speed = 1;
+	public double speed = 2;
 	
 	public boolean right = true, left, up, down;
 	public boolean pendingRight, pendingLeft, pendingUp, pendingDown;
@@ -23,9 +23,6 @@ public class Player extends Entity {
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] downPlayer;
 	private BufferedImage[] leftPlayer;
-	
-//	public static double maskx = +1, masky = +1;
-//	public static int maskw = 14, maskh = 14;
 	
 	public Player(double x, double y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
