@@ -34,8 +34,8 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	
 	private BufferedImage mainImage;
 	
-	private int WIDTH = World.TS*16 + 7;
-	private int HEIGHT = World.TS*17 + 2;
+	private int WIDTH = World.TS*16;
+	private int HEIGHT = World.TS*16;
 	private int SCALE = 2;
 	
 	private World world;
@@ -71,6 +71,7 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	
 	private Game() {
 		mainImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		addKeyListener(this);
 		initFrame();
 
@@ -160,7 +161,6 @@ public class Game extends Canvas implements KeyListener, Runnable {
 	
 	private void initFrame() {
 		JFrame frame = new JFrame("Pac-Man");
-		frame.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		frame.add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
